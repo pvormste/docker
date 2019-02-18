@@ -12,6 +12,12 @@ RUN apk add --no-cache \
 # Following line is already run by the golang image:
 # RUN [ ! -e /etc/nsswitch.conf ] && echo 'hosts: files dns' > /etc/nsswitch.conf
 
+# Install dependencies
+RUN apk add --update make
+RUN apk add --update git
+RUN apk add --update gcc
+RUN apk add --update musl-dev
+
 ENV DOCKER_CHANNEL stable
 ENV DOCKER_VERSION 18.09.2
 # TODO ENV DOCKER_SHA256
