@@ -1,4 +1,4 @@
-FROM alpine:3.9
+FROM alpine:3.10
 
 RUN apk add --no-cache \
 		ca-certificates
@@ -10,7 +10,7 @@ RUN apk add --no-cache \
 RUN [ ! -e /etc/nsswitch.conf ] && echo 'hosts: files dns' > /etc/nsswitch.conf
 
 ENV DOCKER_CHANNEL test
-ENV DOCKER_VERSION 19.03.0-beta3
+ENV DOCKER_VERSION 19.03.0-rc3
 # TODO ENV DOCKER_SHA256
 # https://github.com/docker/docker-ce/blob/5b073ee2cf564edee5adca05eee574142f7627bb/components/packaging/static/hash_files !!
 # (no SHA file artifacts on download.docker.com yet as of 2017-06-07 though)
@@ -20,11 +20,14 @@ RUN set -eux; \
 # this "case" statement is generated via "update.sh"
 	apkArch="$(apk --print-arch)"; \
 	case "$apkArch" in \
+# amd64
 		x86_64) dockerArch='x86_64' ;; \
+# arm32v6
 		armhf) dockerArch='armel' ;; \
+# arm32v7
+		armv7) dockerArch='armhf' ;; \
+# arm64v8
 		aarch64) dockerArch='aarch64' ;; \
-		ppc64le) dockerArch='ppc64le' ;; \
-		s390x) dockerArch='s390x' ;; \
 		*) echo >&2 "error: unsupported architecture ($apkArch)"; exit 1 ;;\
 	esac; \
 	\
