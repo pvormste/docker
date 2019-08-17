@@ -107,7 +107,7 @@ for version in "${versions[@]}"; do
 	minorVersion="${minorVersion#0}"
 
 	for variant in \
-		'' git dind \
+		'' git dind dind-rootless \
 		windows/windowsservercore-{1709,ltsc2016} \
 	; do
 		dir="$version${variant:+/$variant}"
@@ -126,6 +126,11 @@ for version in "${versions[@]}"; do
 			-e 's!%%DIND-COMMIT%%!'"$dindLatest"'!g' \
 			-e 's!%%ARCH-CASE%%!'"$(sed_escape_rhs "$archCase")"'!g' \
 			"$template" > "$df"
+
+		# DOCKER_TLS_CERTDIR is only enabled-by-default in 19.03+
+		if [ "$majorVersion" -lt 19 ]; then
+			sed -ri -e 's!^(ENV DOCKER_TLS_CERTDIR=).*$!\1!' "$df"
+		fi
 
 		# pigz (https://github.com/moby/moby/pull/35697) is only 18.02+
 		if [ "$majorVersion" -lt 18 ] || { [ "$majorVersion" -eq 18 ] && [ "$minorVersion" -lt 2 ]; }; then

@@ -87,7 +87,8 @@ for version in "${versions[@]}"; do
 	if [ "$rcVersion" != "$version" ] && [ -e "$rcVersion/Dockerfile" ]; then
 		# if this is a "-rc" release, let's make sure the release it contains isn't already GA (and thus something we should not publish anymore)
 		rcFullVersion="$(git show HEAD:"$rcVersion/Dockerfile" | awk '$1 == "ENV" && $2 == "DOCKER_VERSION" { print $3; exit }')"
-		if [[ "$fullVersion" == "$rcFullVersion"* ]]; then
+		latestVersion="$({ echo "$fullVersion"; echo "$rcFullVersion"; } | sort -V | tail -1)"
+		if [[ "$fullVersion" == "$rcFullVersion"* ]] || [ "$latestVersion" = "$rcFullVersion" ]; then
 			# "x.y.z-rc1" == x.y.z*
 			continue
 		fi
@@ -145,7 +146,7 @@ for version in "${versions[@]}"; do
 	EOE
 
 	for v in \
-		dind git \
+		dind dind-rootless git \
 		windows/windowsservercore-{ltsc2016,1709} \
 	; do
 		dir="$version/$v"
@@ -158,6 +159,10 @@ for version in "${versions[@]}"; do
 		variantAliases=( "${variantAliases[@]//latest-/}" )
 
 		case "$v" in
+			# https://github.com/docker/docker-ce/blob/8fb3bb7b2210789a4471c017561c1b0de0b4f145/components/engine/hack/make/binary-daemon#L24
+			# "vpnkit is amd64-only" ... for now??
+			dind-rootless) variantArches='amd64' ;;
+
 			windows/*) variantArches='windows-amd64' ;;
 			*)         variantArches="$versionArches" ;;
 		esac
