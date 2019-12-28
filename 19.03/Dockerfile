@@ -3,7 +3,9 @@ ARG ALPINE_VERSION
 FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION}
 
 RUN apk add --no-cache \
-		ca-certificates
+		ca-certificates \
+# DOCKER_HOST=ssh://... -- https://github.com/docker/cli/pull/1014
+		openssh-client
 
 # set up nsswitch.conf for Go's "netgo" implementation (which Docker explicitly uses)
 # - https://github.com/docker/docker-ce/blob/v17.09.0-ce/components/engine/hack/make.sh#L149
@@ -20,7 +22,7 @@ RUN apk add --update gcc
 RUN apk add --update musl-dev
 
 ENV DOCKER_CHANNEL stable
-ENV DOCKER_VERSION 19.03.4
+ENV DOCKER_VERSION 19.03.5
 # TODO ENV DOCKER_SHA256
 # https://github.com/docker/docker-ce/blob/5b073ee2cf564edee5adca05eee574142f7627bb/components/packaging/static/hash_files !!
 # (no SHA file artifacts on download.docker.com yet as of 2017-06-07 though)
