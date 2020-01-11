@@ -23,5 +23,5 @@ jobs:
         run: |
           LATEST_IMAGE_NAME=$(./build-go.sh show-latest)
           MINOR_IMAGE_NAME=$(./build-go.sh show-minor)
-          docker push ${$LATEST_IMAGE_NAME}
-          docker push ${$MINOR_IMAGE_NAME}
+          docker push ${LATEST_IMAGE_NAME}
+          docker push ${MINOR_IMAGE_NAME}
