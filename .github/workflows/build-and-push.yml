@@ -13,10 +13,8 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: go
-      - name: install dependencies
-        run: apk add libc6-compat --no-cache
       - name: build
-        run: ./build-go.sh
+        run: apk add libc6-compat --no-cache && ./build-go.sh
       - name: docker login
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
