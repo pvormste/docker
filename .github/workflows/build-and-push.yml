@@ -10,7 +10,7 @@ jobs:
     container: docker:latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
       - name: build
         run: |
           chmod +x build-go.sh
