@@ -16,7 +16,6 @@ jobs:
       - name: build
         run: |
           ls -l -a
-          chmod +x build-go.sh
           ./build-go.sh
       - name: docker login
         env:
