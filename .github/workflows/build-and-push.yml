@@ -1,0 +1,23 @@
+name: "build and push"
+on:
+  push:
+    branches:
+      - go
+
+jobs:
+  "build and push":
+    runs-on: ubuntu-latest
+    container: docker:latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: build
+        run: |
+          chmod +x build-go.sh
+          ./build-go.sh
+      - name: docker login
+        with:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+        run: |
+          echo ${DOCKER_ACCESS_TOKEN} | docker login --username ${DOCKER_USERNAME} --password-stdin
