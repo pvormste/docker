@@ -19,3 +19,9 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
         run: echo ${DOCKER_ACCESS_TOKEN} | docker login --username ${DOCKER_USERNAME} --password-stdin
+      - name: push to dockerhub
+        run: |
+          LATEST_IMAGE_NAME=$(./build-go.sh show-latest)
+          MINOR_IMAGE_NAME=$(./build-go.sh show-minor)
+          docker push ${$LATEST_IMAGE_NAME}
+          docker push ${$MINOR_IMAGE_NAME}
