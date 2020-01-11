@@ -16,7 +16,7 @@ jobs:
           chmod +x build-go.sh
           ./build-go.sh
       - name: docker login
-        with:
+        env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
         run: |
