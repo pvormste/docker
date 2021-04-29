@@ -1,10 +1,6 @@
-#
-# NOTE: THIS DOCKERFILE IS GENERATED VIA "apply-templates.sh"
-#
-# PLEASE DO NOT EDIT IT DIRECTLY.
-#
-
-FROM alpine:3.13
+ARG GO_VERSION
+ARG ALPINE_VERSION
+FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION}
 
 RUN apk add --no-cache \
 		ca-certificates \
@@ -15,7 +11,15 @@ RUN apk add --no-cache \
 # - https://github.com/docker/docker-ce/blob/v17.09.0-ce/components/engine/hack/make.sh#L149
 # - https://github.com/golang/go/blob/go1.9.1/src/net/conf.go#L194-L275
 # - docker run --rm debian:stretch grep '^hosts:' /etc/nsswitch.conf
-RUN [ ! -e /etc/nsswitch.conf ] && echo 'hosts: files dns' > /etc/nsswitch.conf
+
+# Following line is already run by the golang image:
+# RUN [ ! -e /etc/nsswitch.conf ] && echo 'hosts: files dns' > /etc/nsswitch.conf
+
+# Install dependencies
+RUN apk add --update make
+RUN apk add --update git
+RUN apk add --update gcc
+RUN apk add --update musl-dev
 
 ENV DOCKER_VERSION 20.10.6
 # TODO ENV DOCKER_SHA256

@@ -2,8 +2,6 @@ ARG GO_VERSION
 ARG ALPINE_VERSION
 FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION}
 
-FROM alpine:3.13
-
 RUN apk add --no-cache \
 		ca-certificates \
 # DOCKER_HOST=ssh://... -- https://github.com/docker/cli/pull/1014
