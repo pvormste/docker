@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM docker:19.03-rc
+FROM docker:20.10
 
 # https://github.com/docker/docker/blob/master/project/PACKAGERS.md#runtime-dependencies
 RUN set -eux; \
@@ -12,6 +12,7 @@ RUN set -eux; \
 		btrfs-progs \
 		e2fsprogs \
 		e2fsprogs-extra \
+		ip6tables \
 		iptables \
 		openssl \
 		shadow-uidmap \

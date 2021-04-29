@@ -1,4 +1,10 @@
-FROM docker:{{ env.version }}-dind
+#
+# NOTE: THIS DOCKERFILE IS GENERATED VIA "apply-templates.sh"
+#
+# PLEASE DO NOT EDIT IT DIRECTLY.
+#
+
+FROM docker:20.10-rc-dind
 
 # busybox "ip" is insufficient:
 #   [rootlesskit:child ] error: executing [[ip tuntap add name tap0 mode tap] [ip link set tap0 address 02:50:00:00:00:01]]: exit status 1
@@ -17,30 +23,9 @@ RUN set -eux; \
 	\
 	apkArch="$(apk --print-arch)"; \
 	case "$apkArch" in \
-{{
-	[
-		.arches | to_entries[]
-		| select(.value.rootlessExtrasUrl)
-		| .key as $bashbrewArch
-		| (
-			{
-				amd64: "x86_64",
-				arm32v6: "armhf",
-				arm32v7: "armv7",
-				arm64v8: "aarch64",
-			}
-			| .[$bashbrewArch] // $bashbrewArch
-		) as $apkArch
-		| .value
-		| (
--}}
-		{{ $apkArch | @sh }}) \
-			url={{ .rootlessExtrasUrl | @sh }}; \
+		'x86_64') \
+			url='https://download.docker.com/linux/static/test/x86_64/docker-rootless-extras-20.10.0-rc2.tgz'; \
 			;; \
-{{
-		)
-	] | add
--}}
 		*) echo >&2 "error: unsupported architecture ($apkArch)"; exit 1 ;; \
 	esac; \
 	\

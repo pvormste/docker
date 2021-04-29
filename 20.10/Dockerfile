@@ -1,6 +1,8 @@
-ARG GO_VERSION
-ARG ALPINE_VERSION
-FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION}
+#
+# NOTE: THIS DOCKERFILE IS GENERATED VIA "apply-templates.sh"
+#
+# PLEASE DO NOT EDIT IT DIRECTLY.
+#
 
 FROM alpine:3.13
 
@@ -13,18 +15,9 @@ RUN apk add --no-cache \
 # - https://github.com/docker/docker-ce/blob/v17.09.0-ce/components/engine/hack/make.sh#L149
 # - https://github.com/golang/go/blob/go1.9.1/src/net/conf.go#L194-L275
 # - docker run --rm debian:stretch grep '^hosts:' /etc/nsswitch.conf
+RUN [ ! -e /etc/nsswitch.conf ] && echo 'hosts: files dns' > /etc/nsswitch.conf
 
-# Following line is already run by the golang image:
-# RUN [ ! -e /etc/nsswitch.conf ] && echo 'hosts: files dns' > /etc/nsswitch.conf
-
-# Install dependencies
-RUN apk add --update make
-RUN apk add --update git
-RUN apk add --update gcc
-RUN apk add --update musl-dev
-
-ENV DOCKER_CHANNEL stable
-ENV DOCKER_VERSION 19.03.15
+ENV DOCKER_VERSION 20.10.6
 # TODO ENV DOCKER_SHA256
 # https://github.com/docker/docker-ce/blob/5b073ee2cf564edee5adca05eee574142f7627bb/components/packaging/static/hash_files !!
 # (no SHA file artifacts on download.docker.com yet as of 2017-06-07 though)
@@ -34,16 +27,16 @@ RUN set -eux; \
 	apkArch="$(apk --print-arch)"; \
 	case "$apkArch" in \
 		'x86_64') \
-			url='https://download.docker.com/linux/static/stable/x86_64/docker-19.03.15.tgz'; \
+			url='https://download.docker.com/linux/static/stable/x86_64/docker-20.10.6.tgz'; \
 			;; \
 		'armhf') \
-			url='https://download.docker.com/linux/static/stable/armel/docker-19.03.15.tgz'; \
+			url='https://download.docker.com/linux/static/stable/armel/docker-20.10.6.tgz'; \
 			;; \
 		'armv7') \
-			url='https://download.docker.com/linux/static/stable/armhf/docker-19.03.15.tgz'; \
+			url='https://download.docker.com/linux/static/stable/armhf/docker-20.10.6.tgz'; \
 			;; \
 		'aarch64') \
-			url='https://download.docker.com/linux/static/stable/aarch64/docker-19.03.15.tgz'; \
+			url='https://download.docker.com/linux/static/stable/aarch64/docker-20.10.6.tgz'; \
 			;; \
 		*) echo >&2 "error: unsupported architecture ($apkArch)"; exit 1 ;; \
 	esac; \
